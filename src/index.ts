@@ -1,17 +1,17 @@
-import express, { Request, Response, NextFunction } from 'express';
-import dotenv from 'dotenv';
-import morgan from 'morgan';
-import helmet from 'helmet';
-import mongoSanitize from 'express-mongo-sanitize';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-import cors from 'cors';
-import fileUpload from 'express-fileupload';
-import createHttpError from 'http-errors';
-import mongoose from 'mongoose';
+import express, { Request, Response, NextFunction } from "express";
+import dotenv from "dotenv";
+import morgan from "morgan";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import cookieParser from "cookie-parser";
+import compression from "compression";
+import cors from "cors";
+import fileUpload from "express-fileupload";
+import createHttpError from "http-errors";
+import mongoose from "mongoose";
 
 // Configs import
-import logger from './configs/logger.config';
+import logger from "./configs/logger.config";
 
 // Create express app
 const app = express();
@@ -30,14 +30,14 @@ mongoose
     );
 
 // Terminate server on MongoDB error
-mongoose.connection.on('error', err => {
+mongoose.connection.on("error", err => {
     logger.error(`Database connection failed -> ${err.message}`);
     process.exit(1);
 });
 
 // HTTP request logger middleware
-if (process.env.NODE_ENV !== 'production') {
-    app.use(morgan('dev'));
+if (process.env.NODE_ENV !== "production") {
+    app.use(morgan("dev"));
 }
 
 // Secure express apps with various HTTP headers
@@ -65,7 +65,7 @@ app.use(cors());
 app.use(fileUpload({ useTempFiles: true }));
 
 // Test route
-app.post('/', (req: Request, res: Response) => {
+app.post("/", (req: Request, res: Response) => {
     res.send(req.body);
 });
 
@@ -78,7 +78,7 @@ let server = app.listen(PORT, () => {
 app.use(async (req, res, next) => {
     next(
         createHttpError.NotFound(
-            'The requested resource could not be found on this server'
+            "The requested resource could not be found on this server"
         )
     );
 });
@@ -111,11 +111,11 @@ const unexpectedErrorHandler = (err: unknown) => {
 };
 
 // Listen for server error logs
-process.on('uncaughtException', unexpectedErrorHandler);
-process.on('unhandledRejection', unexpectedErrorHandler);
+process.on("uncaughtException", unexpectedErrorHandler);
+process.on("unhandledRejection", unexpectedErrorHandler);
 
 // Terminate server gracefully
-process.on('SIGTERM', () => {
+process.on("SIGTERM", () => {
     if (server) {
         logger.info(`Terminate the server on port ${PORT}`);
         process.exit(1);
